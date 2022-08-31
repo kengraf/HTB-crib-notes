@@ -21,6 +21,10 @@ get Flag
 RDP as Administrator, no password  
 xfreerdp /v:Administrator /cert:ignore /v:{IP-addess}  
 
+### Preignition
+gobuster -x php {IP-address}
+http://{IP-address}/admini.php
+
 # TIER 1
 
 ###  
