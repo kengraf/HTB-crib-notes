@@ -64,6 +64,12 @@ http://ignition.htb/admin
 admin:qwerty123
 
 ### Bike
+SSTI send {{7+7}}  BURP repeater to ahve "Handlebars" provide data  
+
 ### Pennyworth
+Jenkins/Groovy script for a reverse shell
+
+### Tactics
+SMB share, retrieve flag.txt  
 
 
