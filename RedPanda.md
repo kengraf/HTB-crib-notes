@@ -31,8 +31,8 @@ wfuzz -w /usr/share/wfuzz/wordlist/general/common.txt http://redpanda.htb:8080/F
 POST allowed to redpanda.htb:8080/search
 Confirm /stats/ responds to GET requests
 
-**DEAD END:** Running OWASP ZAP only turned up vectors for attacking RedPanda clients.
-**DEAD END:** Browsing site showed nothing interesting in source.
+**DEAD END:** Running OWASP ZAP only turned up vectors for attacking RedPanda clients.  
+**DEAD END:** Browsing site showed nothing interesting in source.  
 **DEAD END:**  Using Hydra to guess common username/passwords for SSH.  Trying a small set of default username and password combinations work more often in real world vs. simulations.  
 ```
 echo 'root\nuser\nadmin\nadministrator\ndevelopment\ntest\nredpanda\napache\nwoodenk\ndamian' > redpanda.htb.usernames
