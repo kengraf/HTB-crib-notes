@@ -72,4 +72,8 @@ Jenkins/Groovy script for a reverse shell
 ### Tactics
 SMB share, retrieve flag.txt  
 
+# TIER 2
+### Oopsie
+[HTB write up](/writeups/oopsie.pdf)
+php upload a reverse shell, SUID escalation due to group membership
 
