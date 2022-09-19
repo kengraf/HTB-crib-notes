@@ -1,6 +1,9 @@
 # TIER 0
 
 ### Meow  
+sometimes an admin will stand up a quick test box and never get around to any type of hardening small set of default username might do the trick:  root,admin,administrator,guest,apache,oracle  
+trying: blank/no password, "password", and username as passwords  
+
 telnet as "root", blank password
 
 ### Fawn
