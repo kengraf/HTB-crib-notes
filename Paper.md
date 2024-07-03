@@ -72,7 +72,7 @@ Outtakes:
 Geez, lots of ideas, lots of real bad password practices. Hydra failed, zero traction.
 
 #### Better enum 
-Googled RocketChat configuration lead to using environment variables. 
+Googled RocketChat configuration led to using environment variables. 
 A second pass of enum landed on "file ../../dwight/hubot/.env"  
 export ROCKETCHAT_USER=recyclops
 export ROCKETCHAT_PASSWORD=Queenofblad3s!23  
