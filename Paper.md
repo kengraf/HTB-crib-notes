@@ -48,6 +48,13 @@ On KALI
 wpscan --url http://office.paper
 ```
 WordPress version 5.2.3 identified (Insecure, released on 2019-09-05).
+
+On Parrot searchsploit needs to be installed
+```
+git clone https://gitlab.com/exploit-database/exploitdb.git /usr/share/exploitdb
+ln -sf /usr/share/exploitdb/searchsploit /usr/local/bin/searchsploit
+```
+
 ```
 searchsploit wordpress 5.2.3
 cat /usr/share/exploitdb/exploits/multiple/webapps/47690.md
