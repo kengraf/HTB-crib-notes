@@ -107,7 +107,7 @@ ssh dwight@paper.htb
 ```
 # From github
 curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh > linpeas.sh
-scp linpeas.sh dwight@office.paper:linpeas.sh
+scp linpeas.sh dwight@paper.htb:linpeas.sh
 ```
 
 Running linpeas.sh shows vulnerables to  CVE-2021-3560
