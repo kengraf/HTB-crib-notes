@@ -38,6 +38,12 @@ Interesting results:
 - 'x-redirect-by' found, with contents: WordPress
 
 Browsed "office.paper" added a few more possible username to hyrda files.  Following chat noticed command about unsafe draft content.
+
+On Parrot
+```
+docker run -it --rm wpscanteam/wpscan --url http://office.paper
+```
+On KALI
 ```
 wpscan --url http://office.paper
 ```
